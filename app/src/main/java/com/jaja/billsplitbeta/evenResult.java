@@ -1,6 +1,7 @@
 package com.jaja.billsplitbeta;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -49,6 +50,7 @@ public class evenResult extends AppCompatActivity {
 
         penny.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                tipPercentField.setTextColor(Color.BLACK);
                 if (isChecked) {
                     // The toggle is enabled
                     quarter.setChecked(false);
@@ -66,6 +68,7 @@ public class evenResult extends AppCompatActivity {
 
         quarter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                tipPercentField.setTextColor(Color.BLACK);
                 if (isChecked) {
                     // The toggle is enabled
                     penny.setChecked(false);
@@ -83,6 +86,7 @@ public class evenResult extends AppCompatActivity {
 
         dollar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                tipPercentField.setTextColor(Color.BLACK);
                 if (isChecked) {
                     // The toggle is enabled
                     penny.setChecked(false);
@@ -101,6 +105,7 @@ public class evenResult extends AppCompatActivity {
 
         increasePay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                tipPercentField.setTextColor(Color.BLACK);
                 perPersonAmount = roundToNearest(perPersonAmount, roundingFactor);
                 perPersonAmount = (perPersonAmount*100 + roundingFactor) / 100;
                 perPerson.setText(String.format("%.2f", perPersonAmount));
@@ -110,13 +115,17 @@ public class evenResult extends AppCompatActivity {
 
         decreasePay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (perPersonAmount > minimumPayment) {
-                    perPersonAmount = roundToNearest(perPersonAmount, roundingFactor);
-                    perPersonAmount = (perPersonAmount*100 - roundingFactor) / 100;
+                tipPercentField.setTextColor(Color.BLACK);
+                perPersonAmount = roundToNearest(perPersonAmount, roundingFactor);
+                double newAmount = (perPersonAmount*100 - roundingFactor) / 100;
+                if (newAmount <= minimumPayment) {
+                    perPersonAmount = minimumPayment;perPerson.setText(String.format("%.2f", perPersonAmount));
+                    tipPercentField.setText(String.format("%.2f", getTipPercentage()));
+                    tipPercentField.setTextColor(Color.RED);
+                } else {
+                    perPersonAmount = newAmount;
                     perPerson.setText(String.format("%.2f", perPersonAmount));
                     tipPercentField.setText(String.format("%.2f", getTipPercentage()));
-                } else {
-                    //The noob dev is too lazy
                 }
             }
         });
